@@ -60,22 +60,32 @@ int main() {
 
     // Safety algorithm
     int count = 0;
-    while (count < n) {
+    while (count < n)
+    {
         bool found = false;
-        for (int i = 0; i < n; i++) {
-            if (!Finish[i]) {
+
+        for (int i = 0; i < n; i++)
+        {
+            if (!Finish[i])
+            {
                 bool possible = true;
-                for (int j = 0; j < m; j++) {
-                    if (Need[i][j] > Work[j]) {
+    
+                for (int j = 0; j < m; j++)
+                {
+                    if (Need[i][j] > Work[j])
+                    {
                         possible = false;
                         break;
                     }
                 }
 
-                if (possible) {
-                    for (int j = 0; j < m; j++) {
+                if (possible)
+                {
+                    for (int j = 0; j < m; j++)
+                    {
                         Work[j] += Allocation[i][j];
                     }
+
                     safeSequence[count++] = i;
                     Finish[i] = true;
                     found = true;
@@ -83,10 +93,13 @@ int main() {
             }
         }
 
-        if (!found) {
-            break; // No process can proceed safely
+    // If no process could proceed in this round, break to avoid infinite loop
+        if (!found)
+        {
+            break;
         }
     }
+
 
     // Output result
     if (count == n) {
