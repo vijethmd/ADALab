@@ -1,70 +1,48 @@
 #include <stdio.h>
 
+int search(int key, int frame[], int size) {
+    for (int i = 0; i < size; i++) {
+        if (frame[i] == key)
+            return 1;
+    }
+    return 0;
+}
+
+void simulateFIFO(int pages[], int n, int frameSize) {
+    int frame[frameSize], front = 0, faults = 0, hits = 0;
+
+    for (int i = 0; i < frameSize; i++)
+        frame[i] = -1;
+
+    for (int i = 0; i < n; i++) {
+        if (!search(pages[i], frame, frameSize)) {
+            frame[front] = pages[i];
+            front = (front + 1) % frameSize;
+            faults++;
+        } else {
+            hits++;
+        }
+    }
+
+    printf("FIFO Page Faults: %d, Page Hits: %d\n", faults, hits);
+}
+
 int main() {
-    int i, j, n, capacity, pageFaults = 0, pageHits = 0, idx = 0;
+    int n, frameSize;
 
-    printf("Enter number of pages: ");
+    printf("Enter the size of the pages: ");
     scanf("%d", &n);
-    int pages[n];
 
-    printf("Enter page reference string:\n");
-    for (i = 0; i < n; i++) {
+    int pages[n];
+    printf("Enter the page strings: ");
+    for (int i = 0; i < n; i++) {
         scanf("%d", &pages[i]);
     }
 
-    printf("Enter number of frames: ");
-    scanf("%d", &capacity);
+    printf("Enter the no of page frames: ");
+    scanf("%d", &frameSize);
 
-    int frames[capacity];
-    for (i = 0; i < capacity; i++) {
-        frames[i] = -1;  // initialize frames as empty
-    }
-
-    printf("\nPage\tFrame Status\t\tResult\n");
-    printf("-------------------------------------------------\n");
-
-    for (i = 0; i < n; i++) {
-        int found = 0;
-
-        // Check for page hit
-        for (j = 0; j < capacity; j++) {
-            if (frames[j] == pages[i]) {
-                found = 1;
-                break;
-            }
-        }
-
-        printf("%d\t", pages[i]);
-
-        if (found) {
-            pageHits++;
-            // Print frames
-            for (j = 0; j < capacity; j++) {
-                if (frames[j] != -1)
-                    printf("%d ", frames[j]);
-                else
-                    printf("- ");
-            }
-            printf("\t\tHIT\n");
-        } else {
-            // Page fault
-            frames[idx] = pages[i];
-            idx = (idx + 1) % capacity;
-            pageFaults++;
-
-            // Print frames
-            for (j = 0; j < capacity; j++) {
-                if (frames[j] != -1)
-                    printf("%d ", frames[j]);
-                else
-                    printf("- ");
-            }
-            printf("\t\tFAULT\n");
-        }
-    }
-
-    printf("\nTotal Page Faults: %d\n", pageFaults);
-    printf("Total Page Hits  : %d\n", pageHits);
+    simulateFIFO(pages, n, frameSize);
 
     return 0;
 }
